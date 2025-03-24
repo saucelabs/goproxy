@@ -1,6 +1,7 @@
 module github.com/elazarl/goproxy/ext
 
-go 1.20
+go 1.24.1
+
 
 require (
 	github.com/elazarl/goproxy v0.0.0-20241217120900-7711dfa3811c
