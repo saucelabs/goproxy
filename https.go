@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -286,6 +287,7 @@ func (proxy *ProxyHttpServer) handleHttps(w http.ResponseWriter, r *http.Request
 			defer rawClientTls.Close()
 			if err := rawClientTls.Handshake(); err != nil {
 				ctx.Warnf("Cannot handshake client %v %v", r.Host, err)
+				logHandshakeHostToFile(host)
 				return
 			}
 
@@ -682,4 +684,41 @@ func (proxy *ProxyHttpServer) initializeTLSconnection(
 		return nil, err
 	}
 	return tlsConn, nil
+}
+
+func logHandshakeHostToFile(host string) {
+	filePath := "handshake-failures.txt"
+
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		log.Printf("Failed to open log file: %v", err)
+		return
+	}
+	defer file.Close()
+
+	content, err := io.ReadAll(file)
+	if err != nil {
+		log.Printf("Failed to read the log file: %v", err)
+		return
+	}
+
+	// Check if the host is already in the file to avoid duplicates
+	lines := strings.Split(strings.TrimSpace(string(content)), "\n")
+	existingHosts := make(map[string]bool)
+	for _, line := range lines {
+		existingHosts[line] = true
+	}
+	if existingHosts[host] {
+		return
+	}
+
+	writer := bufio.NewWriter(file)
+	if _, err := writer.WriteString(host + "\n"); err != nil {
+		log.Printf("Failed to write to log file: %v", err)
+		return
+	}
+
+	if err := writer.Flush(); err != nil {
+		log.Printf("Failed to flush buffered writer to file: %v", err)
+	}
 }
