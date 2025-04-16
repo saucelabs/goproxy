@@ -10,8 +10,8 @@ require (
 )
 
 require (
-	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 )
 
 replace github.com/elazarl/goproxy => ../
