@@ -518,7 +518,7 @@ func copyOrWarn(ctx *ProxyCtx, dst io.Writer, src io.Reader) error {
 		// Discard closed connection errors
 		err = nil
 	} else if err != nil {
-		ctx.Warnf("Error copying to client: %s", err)
+		ctx.Warnf("Error copying to client: %s, %+v", err, ctx.Req)
 	}
 	return err
 }
@@ -526,7 +526,7 @@ func copyOrWarn(ctx *ProxyCtx, dst io.Writer, src io.Reader) error {
 func copyAndClose(ctx *ProxyCtx, dst, src halfClosable, wg *sync.WaitGroup) {
 	_, err := io.Copy(dst, src)
 	if err != nil && !errors.Is(err, net.ErrClosed) {
-		ctx.Warnf("Error copying to client: %s", err.Error())
+		ctx.Warnf("Error copying to client: %s, %+v", err.Error(), ctx.Req)
 	}
 
 	_ = dst.CloseWrite()
