@@ -1,6 +1,6 @@
 module github.com/elazarl/goproxy/examples/goproxy-transparent
 
-go 1.20
+go 1.25.0
 
 require (
 	github.com/coder/websocket v1.8.12
@@ -10,8 +10,8 @@ require (
 )
 
 require (
-	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 )
 
 replace github.com/elazarl/goproxy => ../
